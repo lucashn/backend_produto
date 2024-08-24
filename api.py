@@ -6,16 +6,19 @@ api = Api(app)
 
 PRODUTOS = {
     'p1': {
+        'p_id': 'p1',
         'nome': 'Camiseta',
         'quantidade': 10,
         'preco': 29.99
     },
     'p2': {
+        'p_id': 'p2',
         'nome': 'Calça',
         'quantidade': 5,
         'preco': 59.99
     },
     'p3': {
+        'p_id': 'p3',
         'nome': 'Kit de meias',
         'quantidade': 7,
         'preco': 23.56
@@ -32,6 +35,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('nome')
 parser.add_argument('quantidade')
 parser.add_argument('preco')
+parser.add_argument('p_id')
 
 
 def le_produto(args):
@@ -55,17 +59,19 @@ class Produto(Resource):
     def put(self, p_id):
         args = parser.parse_args()
         PRODUTOS[p_id] = le_produto(args)
+        PRODUTOS[p_id].p_id = p_id
         return PRODUTOS[p_id], 201
 
 class ListaProdutos(Resource):
     def get(self):
-        return PRODUTOS
+        return list(PRODUTOS.values())
 
     def post(self):
         args = parser.parse_args()
         p_id = int(max(PRODUTOS.keys()).lstrip('p')) + 1
         p_id = f'p{p_id}'
         PRODUTOS[p_id] = le_produto(args)
+        PRODUTOS[p_id].p_id = p_id 
         return PRODUTOS[p_id], 201
 
 api.add_resource(ListaProdutos, '/produto')
