@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
+from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app)
+CORS(app)
 
 PRODUTOS = {
     'p1': {
@@ -78,4 +80,4 @@ api.add_resource(ListaProdutos, '/produto')
 api.add_resource(Produto, '/produto/<p_id>')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0") # colocar o IP da máquina para possibilitar acesso externo
