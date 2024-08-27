@@ -61,7 +61,6 @@ class Produto(Resource):
     def put(self, p_id):
         args = parser.parse_args()
         PRODUTOS[p_id] = le_produto(args)
-        PRODUTOS[p_id].p_id = p_id
         return PRODUTOS[p_id], 201
 
 class ListaProdutos(Resource):
