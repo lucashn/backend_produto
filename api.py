@@ -73,7 +73,7 @@ class ListaProdutos(Resource):
         p_id = int(max(PRODUTOS.keys()).lstrip('p')) + 1
         p_id = f'p{p_id}'
         PRODUTOS[p_id] = le_produto(args)
-        PRODUTOS[p_id].p_id = p_id 
+        PRODUTOS[p_id]["p_id"] = p_id 
         return PRODUTOS[p_id], 201
 
 api.add_resource(ListaProdutos, '/produto')
