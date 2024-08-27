@@ -8,19 +8,19 @@ CORS(app)
 
 PRODUTOS = {
     'p1': {
-        'p_id': 'p1',
+        'id': 'p1',
         'nome': 'Camiseta',
         'quantidade': 10,
         'preco': 29.99
     },
     'p2': {
-        'p_id': 'p2',
+        'id': 'p2',
         'nome': 'Calça',
         'quantidade': 5,
         'preco': 59.99
     },
     'p3': {
-        'p_id': 'p3',
+        'id': 'p3',
         'nome': 'Kit de meias',
         'quantidade': 7,
         'preco': 23.56
@@ -28,16 +28,16 @@ PRODUTOS = {
 }
 
 
-def abortar_se_nao_existir(p_id):
-    if p_id not in PRODUTOS:
-        abort(404, message="Produto {} não existe".format(p_id))
+def abortar_se_nao_existir(id):
+    if id not in PRODUTOS:
+        abort(404, message="Produto {} não existe".format(id))
 
 
 parser = reqparse.RequestParser()
 parser.add_argument('nome')
 parser.add_argument('quantidade')
 parser.add_argument('preco')
-parser.add_argument('p_id')
+parser.add_argument('id')
 
 
 def le_produto(args):
@@ -49,19 +49,20 @@ def le_produto(args):
 
 
 class Produto(Resource):
-    def get(self, p_id):
-        abortar_se_nao_existir(p_id)
-        return PRODUTOS[p_id]
+    def get(self, id):
+        abortar_se_nao_existir(id)
+        return PRODUTOS[id]
 
-    def delete(self, p_id):
-        abortar_se_nao_existir(p_id)
-        del PRODUTOS[p_id]
+    def delete(self, id):
+        abortar_se_nao_existir(id)
+        del PRODUTOS[id]
         return '', 204
 
-    def put(self, p_id):
+    def put(self, id):
         args = parser.parse_args()
-        PRODUTOS[p_id] = le_produto(args)
-        return PRODUTOS[p_id], 201
+        PRODUTOS[id] = le_produto(args)
+        PRODUTOS[id]["id"] = id 
+        return PRODUTOS[id], 201
 
 class ListaProdutos(Resource):
     def get(self):
@@ -69,14 +70,14 @@ class ListaProdutos(Resource):
 
     def post(self):
         args = parser.parse_args()
-        p_id = int(max(PRODUTOS.keys()).lstrip('p')) + 1
-        p_id = f'p{p_id}'
-        PRODUTOS[p_id] = le_produto(args)
-        PRODUTOS[p_id]["p_id"] = p_id 
-        return PRODUTOS[p_id], 201
+        id = int(max(PRODUTOS.keys()).lstrip('p')) + 1
+        id = f'p{id}'
+        PRODUTOS[id] = le_produto(args)
+        PRODUTOS[id]["id"] = id 
+        return PRODUTOS[id], 201
 
 api.add_resource(ListaProdutos, '/produto')
-api.add_resource(Produto, '/produto/<p_id>')
+api.add_resource(Produto, '/produto/<id>')
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0") # colocar o IP da máquina para possibilitar acesso externo
